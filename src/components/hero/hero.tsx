@@ -50,6 +50,7 @@ export function Hero() {
   }
   const handleSearch = async () => {
     console.log(search);
+    setPokemons([]);
     if (search === "") {
       try {
         const res = await axios.post(`http://localhost:3004/v1/pokemons`, { offset: (page - 1) * 12, limit: 12 });
@@ -141,7 +142,7 @@ export function Hero() {
           </div>
           <div className={`flex gap-6 flex-wrap justify-between ${selectedPokemon ? 'w-[100%] md:w-1/4 lg:w-1/2' : 'w-full'}`}>
             {pokemons.length === 0 && loaderArray.map((loader: any, index: number) => (
-              <div className={`w-[100%] sm:w-[48%] md:w-[30%] lg:w-[23%] hover:scale-105 transition-all duration-300 transform`} onClick={() => {
+              <div className={`${selectedPokemon ? 'w-[100%]  lg:w-[47%]' : 'w-[100%] sm:w-[48%] md:w-[30%] lg:w-[23%]'} flex flex-col flex-col-1 hover:scale-105 transition-all duration-300 transform`} onClick={() => {
               }}
                 key={index}
               >
