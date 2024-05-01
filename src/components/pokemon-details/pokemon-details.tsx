@@ -7,18 +7,12 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
-} from 'chart.js'
-import { useEffect, useState } from "react";
+  Legend,
+  Chart
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-)
+} from 'chart.js'
+import { useEffect, useRef, useState } from "react";
+
 
 const pokemonTypeColor = {
   normal: '#A8A878',
@@ -51,54 +45,54 @@ const options = {
 
 export function PokemonDetails({ pokemon, setSelectedPokemon, barChartData }: { pokemon: any, setSelectedPokemon: any, barChartData: any }) {
 
-  // const [barChartData, setBarChartData] = useState({
-  //   labels: [],
-  //   datasets: [
-  //     {
-  //       label: "Stats",
-  //       data: [],
-  //       backgroundColor: ["rgba(255, 99, 132, 0.25)"], // Removed spaces after "rgba"
-  //       borderColor: ["rgba(54, 162, 235, 1)"],
-  //       borderWidth: 1
-  //     }
-  //   ]
-  // })
-  // const barChartData = {
-  //   labels: [],
-  //   datasets: [
-  //     {
-  //       label: "Stats",
-  //       data: [],
-  //       backgroundColor: ["rgba (255, 99, 132, 0.2)"],
-  //       borderColor: ["rgba(54, 162, 235, 1)"],
-  //       borderWidth: 1
-  //     }
-  //   ]
-  // }
-  // console.log(barChartData)
-  // useEffect(() => {
-  //   if (pokemon && pokemon?.id > 0) {
-  //     const newLabels: any = [];
-  //     const newData: any = [];
-  //     pokemon.stats.forEach((stat: any) => {
-  //       newLabels.push(stat?.stat?.name);
-  //       newData.push(stat?.base_stat);
-  //     });
-  //     setBarChartData({
-  //       labels: newLabels,
-  //       datasets: [
-  //         {
-  //           label: "Stats",
-  //           data: newData,
-  //           backgroundColor: ["rgba (255, 99, 132, 0.2)"],
-  //           borderColor: ["rgba(54, 162, 235, 1)"],
-  //           borderWidth: 1
-  //         }
-  //       ]
-  //     });
-  //   }
-  // }, [pokemon]);
+  const [chartData, setChartData] = useState([]);
+  // ChartJS.register(
+  //   CategoryScale,
+  //   LinearScale,
+  //   BarElement,
+  //   Title,
+  //   Tooltip,
+  //   Legend
+  // )
 
+  const rankWidths = ['60%', '54%', '']
+
+  useEffect(() => {
+    if (pokemon) {
+      const data = pokemon.stats.map((stat: any) => ({
+        base_stat: stat.base_stat,
+        name: stat.stat.name,
+        rank: 0,
+        width: '0%',
+      }));
+
+      data.sort((a: any, b: any) => b.base_stat - a.base_stat);
+
+      let currentRank = 1;
+      let previousStat = data[0].base_stat;
+
+      data.forEach((item: any, index: number) => {
+        if (item.base_stat !== previousStat) {
+          currentRank = currentRank + 1;
+        }
+        item.rank = currentRank;
+        item.width = `${58 - (currentRank - 1) * 6}%`
+        previousStat = item.base_stat;
+      });
+      console.log(data);
+      setChartData(data);
+    }
+  }, [pokemon]);
+
+  const getWidth = (name: string) => {
+    let ans = '0%';
+    chartData.map((data: any) => {
+      if (data.name === name) {
+        ans = data.width
+      }
+    })
+    return ans;
+  }
   return (
     <>
       {pokemon &&
@@ -139,7 +133,18 @@ export function PokemonDetails({ pokemon, setSelectedPokemon, barChartData }: { 
             <div className="my-4">
               <div className="text-white text-2xl font-semibold my-2 text-center">STATS</div>
               <div className="w-full">
-                <Bar options={options} data={barChartData} />
+                {pokemon.stats.map((stat: any, index: number) => (
+                  <div className={`flex items-center`} key={index}>
+                    <div className="text-xs text-p-gray w-[30%]">{stat?.stat?.name?.toUpperCase()}</div>
+                    <div className="bg-p-orange h-2"
+                      style={{
+                        width: getWidth(stat.stat.name)
+                      }}
+                    ></div>
+                    {/* {console.log(getWidth(stat.stat.name))} */}
+                    <div className="text-xs text-white w-[10%]">{stat.base_stat}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

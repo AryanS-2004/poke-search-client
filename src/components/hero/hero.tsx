@@ -205,7 +205,7 @@ export function Hero() {
             ))
             }
             {pokemons && pokemons.map((pokemon: any, index: number) => (
-              <div className={`${selectedPokemon ? 'w-[100%] lg:w-[47%]' : 'w-[100%] sm:w-[48%] md:w-[30%] lg:w-[23%]'} flex flex-col flex-col-1 hover:scale-105 transition-all duration-300 transform`} onClick={() => {
+              <div className={`${selectedPokemon ? 'w-[100%]  lg:w-[47%]' : 'w-[100%] sm:w-[48%] md:w-[30%] lg:w-[23%]'} flex flex-col flex-col-1 hover:scale-105 transition-all duration-300 transform`} onClick={() => {
                 handlePokemonSelect(pokemon?.name)
               }}
                 key={index}
