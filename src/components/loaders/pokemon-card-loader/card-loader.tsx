@@ -39,7 +39,7 @@ export function PokemonCardLoader() {
           <div className="py-4 w-48 rounded-full bg-p-gray animate-pulse my-4">
           </div>
           <div className="flex gap-2">
-            {array?.map((type: any, index: number) => (
+            {array?.map((type: number, index: number) => (
               <div
                 className={`py-3 animate-pulse w-16 rounded-full`}
                 style={{ backgroundColor: pokemonTypeColor[type] }}

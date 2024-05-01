@@ -9,53 +9,17 @@ import { PokemonCardLoader } from "../loaders/pokemon-card-loader/card-loader";
 
 export function Hero() {
 
-  const [search, setSearch] = useState("");
-  const [pokemons, setPokemons] = useState([]);
-  const [page, setPage] = useState(1);
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const [barChartData, setBarChartData] = useState({
-    labels: [],
-    datasets: [
-      {
-        label: "Stats",
-        data: [],
-        backgroundColor: ["rgba(255, 99, 132, 0.25)"], // Removed spaces after "rgba"
-        borderColor: ["rgba(54, 162, 235, 1)"],
-        borderWidth: 1
-      }
-    ]
-  })
+  const [search, setSearch] = useState<string>("");
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [selectedPokemon, setSelectedPokemon] = useState<SinglePokemon | null>(null);
 
   let loaderArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
-
 
   useEffect(() => {
     getPokemons();
   }, [page])
 
-  const setWithExpiry = (key: string, value: any, expiryInMinutes: number) => {
-    const now = new Date();
-    const item = {
-      value: value,
-      expiry: now.getTime() + expiryInMinutes * 60 * 1000,
-    };
-    localStorage.setItem(key, JSON.stringify(item));
-  };
-
-  const getWithExpiry = (key: string) => {
-    const itemStr = localStorage.getItem(key);
-    if (!itemStr) {
-      return null;
-    }
-    const item = JSON.parse(itemStr);
-    const now = new Date();
-    if (now.getTime() > item.expiry) {
-      localStorage.removeItem(key);
-      return null;
-    }
-    return item.value;
-  };
 
   const numbersArray = [];
   for (let i = 1; i <= 109; i++) {
@@ -80,25 +44,6 @@ export function Hero() {
       const res = await axios.get(`http://localhost:3004/v1/pokemons/${id}`);
       console.log(res.data.pokemon);
       setSelectedPokemon(res.data.pokemon);
-      const pokemon = res.data.pokemon;
-      const newLabels: any = [];
-      const newData: any = [];
-      pokemon.stats.forEach((stat: any) => {
-        newLabels.push(stat?.stat?.name);
-        newData.push(stat?.base_stat);
-      });
-      setBarChartData({
-        labels: newLabels,
-        datasets: [
-          {
-            label: "Stats",
-            data: newData,
-            backgroundColor: ["rgba (255, 99, 132, 0.2)"],
-            borderColor: ["rgba(54, 162, 235, 1)"],
-            borderWidth: 1
-          }
-        ]
-      });
     } catch (err) {
       console.log(err);
     }
@@ -162,7 +107,7 @@ export function Hero() {
             />
           </div>
           <div className={`flex w-[90%] justify-around overflow-hidden text-white`}>
-            {numbersArray.slice(page > 5 ? page - 5 : 0, page > 5 ? page + 5 : 10).map((number, index: number) => (
+            {numbersArray.slice(page > 5 ? page - 5 : 0, page > 5 ? page + 5 : 10).map((number: number, index: number) => (
               <div
                 key={index}
                 onClick={() => {
@@ -192,7 +137,7 @@ export function Hero() {
         </div>
         <div className="md:flex gap-4 justify-around px-6 mb-8">
           <div className={`${selectedPokemon ? 'w-[100%] md:w-[75%] lg:w-1/2' : 'w-0 p-0'} md:hidden transition-all duration-500 transform  flex flex-col mb-8`}>
-            <PokemonDetails pokemon={selectedPokemon} barChartData={barChartData} setSelectedPokemon={setSelectedPokemon} />
+            <PokemonDetails pokemon={selectedPokemon} setSelectedPokemon={setSelectedPokemon} />
           </div>
           <div className={`flex gap-6 flex-wrap justify-between ${selectedPokemon ? 'w-[100%] md:w-1/4 lg:w-1/2' : 'w-full'}`}>
             {pokemons.length === 0 && loaderArray.map((loader: any, index: number) => (
@@ -204,7 +149,7 @@ export function Hero() {
               </div>
             ))
             }
-            {pokemons && pokemons.map((pokemon: any, index: number) => (
+            {pokemons && pokemons.map((pokemon: Pokemon, index: number) => (
               <div className={`${selectedPokemon ? 'w-[100%]  lg:w-[47%]' : 'w-[100%] sm:w-[48%] md:w-[30%] lg:w-[23%]'} flex flex-col flex-col-1 hover:scale-105 transition-all duration-300 transform`} onClick={() => {
                 handlePokemonSelect(pokemon?.name)
               }}
@@ -216,7 +161,7 @@ export function Hero() {
             }
           </div>
           <div className={`${selectedPokemon ? 'w-[100%] md:w-[75%] lg:w-1/2' : 'w-0 p-0'} transition-all duration-500 transform  hidden md:flex flex-col`}>
-            <PokemonDetails pokemon={selectedPokemon} barChartData={barChartData} setSelectedPokemon={setSelectedPokemon} />
+            <PokemonDetails pokemon={selectedPokemon} setSelectedPokemon={setSelectedPokemon} />
           </div>
         </div>
       </div>

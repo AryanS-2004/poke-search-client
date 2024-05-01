@@ -46,7 +46,7 @@ const pokemonTypeColor = {
   fairy: '#F0B6BC',
 }
 
-export function PokemonCard({ pokemon }: { pokemon: any }) {
+export function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
   return (
     <>
       <div
@@ -64,7 +64,7 @@ export function PokemonCard({ pokemon }: { pokemon: any }) {
             {pokemon?.name.toUpperCase()}
           </div>
           <div className="flex gap-2">
-            {pokemon?.types?.map((type: any, index: number) => (
+            {pokemon?.types?.map((type: PokemonType, index: number) => (
               <div
                 className={`p-[2px] px-3 rounded-full text-white`}
                 style={{ backgroundColor: pokemonTypeColor[type.type.name as keyof typeof pokemonTypeColor] }}

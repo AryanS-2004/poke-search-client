@@ -1,17 +1,5 @@
 import Image from "next/image";
-import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  Chart
-
-} from 'chart.js'
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const pokemonTypeColor = {
@@ -43,19 +31,9 @@ const options = {
   },
 };
 
-export function PokemonDetails({ pokemon, setSelectedPokemon, barChartData }: { pokemon: any, setSelectedPokemon: any, barChartData: any }) {
+export function PokemonDetails({ pokemon, setSelectedPokemon }: { pokemon: SinglePokemon | null, setSelectedPokemon: any, }) {
 
-  const [chartData, setChartData] = useState([]);
-  // ChartJS.register(
-  //   CategoryScale,
-  //   LinearScale,
-  //   BarElement,
-  //   Title,
-  //   Tooltip,
-  //   Legend
-  // )
-
-  const rankWidths = ['60%', '54%', '']
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
   useEffect(() => {
     if (pokemon) {
@@ -79,7 +57,7 @@ export function PokemonDetails({ pokemon, setSelectedPokemon, barChartData }: { 
         item.width = `${58 - (currentRank - 1) * 6}%`
         previousStat = item.base_stat;
       });
-      console.log(data);
+
       setChartData(data);
     }
   }, [pokemon]);
@@ -110,7 +88,7 @@ export function PokemonDetails({ pokemon, setSelectedPokemon, barChartData }: { 
               <div className="text-white">Weight: <span>{pokemon?.height} kg</span></div>
             </div>
             <div className="flex gap-4 my-4 justify-around">
-              {pokemon?.types?.map((type: any, index: number) => (
+              {pokemon?.types?.map((type: PokemonType, index: number) => (
                 <div
                   className={`py-1 px-8 rounded-xl text-white text-lg`}
                   style={{ backgroundColor: pokemonTypeColor[type.type.name as keyof typeof pokemonTypeColor] }}
@@ -124,7 +102,7 @@ export function PokemonDetails({ pokemon, setSelectedPokemon, barChartData }: { 
             <div className="my-4">
               <div className="text-white text-2xl font-semibold my-2 text-center">ABILITIES</div>
               <div className="flex gap-6 my-2 justify-around">
-                {pokemon.abilities.map((ability: any, index: number) => (
+                {pokemon.abilities.map((ability: PokemonAbility, index: number) => (
                   <div key={index} className="text-p-gray font-semibold" > {ability.ability.name.toUpperCase()}</div>
                 ))}
               </div>
@@ -133,15 +111,14 @@ export function PokemonDetails({ pokemon, setSelectedPokemon, barChartData }: { 
             <div className="my-4">
               <div className="text-white text-2xl font-semibold my-2 text-center">STATS</div>
               <div className="w-full">
-                {pokemon.stats.map((stat: any, index: number) => (
+                {pokemon.stats.map((stat: PokemonStat, index: number) => (
                   <div className={`flex items-center`} key={index}>
                     <div className="text-xs text-p-gray w-[30%]">{stat?.stat?.name?.toUpperCase()}</div>
-                    <div className="bg-p-orange h-2"
+                    <div className="bg-p-orange h-2 mr-1"
                       style={{
                         width: getWidth(stat.stat.name)
                       }}
                     ></div>
-                    {/* {console.log(getWidth(stat.stat.name))} */}
                     <div className="text-xs text-white w-[10%]">{stat.base_stat}</div>
                   </div>
                 ))}
