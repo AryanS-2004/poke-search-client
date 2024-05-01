@@ -53,7 +53,7 @@ export function PokemonCard({ pokemon }: { pokemon: any }) {
         className="bg-p-orange rounded-2xl p-4 w-full cursor-pointer"
         style={{ 'boxShadow': '0px 10px 15px -3px #EF8354' }}
       >
-        <div className="text-p-blue">
+        <div className="text-p-gray font-bold">
           #{pokemon?.id}
         </div>
         <div>
